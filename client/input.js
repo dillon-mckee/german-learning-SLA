@@ -13,7 +13,7 @@ var connect = require('react-redux').connect;
 var InputContainer = React.createClass({
   onGuessSubmit: function(event) {
       event.preventDefault();
-        var userNum = this.refs.userInput.value;
+        var userAnswer = this.refs.userInput.value;
         this.props.dispatch(actions.makeGuess(userNum));
         this.props.dispatch(
             actions.fetchDescription(this.props.repository.name)
@@ -37,7 +37,4 @@ var Container = connect()(InputContainer);
 /** Exports the InputContainer that has been connected with the state */
 //module.exports = Container;
 
-module.exports = {
-  input: InputContainer,
-  container: Container
-}
+module.exports = InputContainer;
