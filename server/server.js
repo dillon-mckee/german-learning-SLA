@@ -4,6 +4,9 @@ var passport = require('passport');
 var Strategy = require('passport-google-oauth20').Strategy;
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
+var mongoose = require('mongoose');
+var config = require('./config');
+
 
 passport.use(new Strategy({
     clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
@@ -39,6 +42,30 @@ app.get('/login/facebook/return',
   function(req, res) {
     res.redirect('/');
   });
+
+var runServer = function(callback) {
+  mongoose.connect(config.DATABASE_URL, function(err) {
+    if (err && callback) {
+      return callback(err);
+    }
+
+    app.listen(config.PORT, function() {
+      console.log('Listening on localhost:' + config.PORT);
+      if (callback) {
+          callback();
+      }
+    });
+  });
+};
+
+if (require.main === module) {
+  runServer(function(err) {
+    if (err) {
+        console.error(err);
+    }
+  });
+};
+
 
 var words = [
   {
@@ -78,42 +105,45 @@ var words = [
   }
 ]
 
-var todoIndex = 3;
+// var todoIndex = 3;
+//
+//
+// app.get('/api/words', function(req, res) {
+//   res.json({words: words})
+// });
+//
+// app.post('/api/status', jsonParser, function(req, res) {
+//   if (!('title' in req.body)) {
+//     return res.sendStatus(400);
+//   }
+//
+//   status.push({id: todoIndex, title: req.body.title, completed: req.body.completed});
+//   todoIndex++;
+//   res.status(201).json({todos: todos})
+// });
+//
+// app.put('/api/:id', jsonParser, function(req, res) {
+//   console.log(req.body)
+//   console.log(!('title' in req.body));
+//   console.log(!('status' in req.body));
+//
+//   if (!('title' in req.body ) && !('status' in req.body)) {
+//     return res.sendStatus(400);
+//   }
+//
+//   if (req.body.title) {
+//     todos[req.params.id].title = req.body.title
+//   };
+//
+//   if (req.body.status) {
+//     todos[req.params.id].completed = req.body.status
+//   };
+//   res.status(201).json({todos: todos})
+// });
 
+// app.listen(3000, function () {
+//   console.log('Listening at 3000!');
+// });
 
-app.get('/api/words', function(req, res) {
-  res.json({words: words})
-});
-
-app.post('/api/status', jsonParser, function(req, res) {
-  if (!('title' in req.body)) {
-    return res.sendStatus(400);
-  }
-
-  status.push({id: todoIndex, title: req.body.title, completed: req.body.completed});
-  todoIndex++;
-  res.status(201).json({todos: todos})
-});
-
-app.put('/api/:id', jsonParser, function(req, res) {
-  console.log(req.body)
-  console.log(!('title' in req.body));
-  console.log(!('status' in req.body));
-
-  if (!('title' in req.body ) && !('status' in req.body)) {
-    return res.sendStatus(400);
-  }
-
-  if (req.body.title) {
-    todos[req.params.id].title = req.body.title
-  };
-
-  if (req.body.status) {
-    todos[req.params.id].completed = req.body.status
-  };
-  res.status(201).json({todos: todos})
-});
-
-app.listen(3000, function () {
-  console.log('Listening at 3000!');
-});
+exports.app = app;
+exports.runServer = runServer;
