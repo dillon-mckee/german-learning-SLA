@@ -1,22 +1,22 @@
-var FETCH_TODO_SUCCESS = 'FETCH_TODO_SUCCESS';
-var fetchTodoSuccess = function(data) {
+var FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS';
+var fetchDataSuccess = function(data) {
     return {
-        type: FETCH_TODO_SUCCESS,
+        type: FETCH_DATA_SUCCESS,
         data: data
     };
 };
 
-var FETCH_TODO_ERROR= 'FETCH__ERROR';
-var fetchTodoError = function(error) {
+var FETCH_DATA_ERROR= 'FETCH_DATA_ERROR';
+var fetchDataError = function(error) {
     return {
-        type: FETCH_TODO_ERROR,
+        type: FETCH_DATA_ERROR,
         error: error
     };
 };
 
 var fetchData = function() {
     return function(dispatch) {
-        var url = 'http://localhost:3000/api/all';
+        var url = 'http://localhost:3000/api/words';
         return fetch(url).then(function(response) {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
@@ -30,12 +30,12 @@ var fetchData = function() {
         })
         .then(function(data) {
             return dispatch(
-                fetchTodoSuccess(data)
+                fetchDataSuccess(data)
             );
         })
         .catch(function(error) {
             return dispatch(
-                fetchTodoError(error)
+                fetchDataError(error)
             );
         });
     }
@@ -99,7 +99,7 @@ var putData = function(id, title) {
         })
         .then(function(data) {
             return dispatch(
-                fetchTodoSuccess(data)
+                fetchDataSuccess(data)
                 // I'm using the same success and error actions,
                 // but you might want to use different actions
                 // for these functions.
@@ -107,7 +107,7 @@ var putData = function(id, title) {
         })
         .catch(function(error) {
             return dispatch(
-                fetchTodoError(error)
+                fetchDataError(error)
             );
         });
     }
@@ -135,7 +135,7 @@ var putStatus = function(id, status) {
         })
         .then(function(data) {
             return dispatch(
-                fetchTodoSuccess(data)
+                fetchDataSuccess(data)
                 // I'm using the same success and error actions,
                 // but you might want to use different actions
                 // for these functions.
@@ -143,7 +143,7 @@ var putStatus = function(id, status) {
         })
         .catch(function(error) {
             return dispatch(
-                fetchTodoError(error)
+                fetchDataError(error)
             );
         });
     }
@@ -154,7 +154,7 @@ exports.putData = putData;
 exports.postData = postData;
 exports.fetchData = fetchData;
 
-exports.FETCH_TODO_SUCCESS = FETCH_TODO_SUCCESS;
-exports.fetchTodoSuccess = fetchTodoSuccess;
-exports.FETCH_TODO_ERROR = FETCH_TODO_ERROR;
-exports.fetchTodoError = fetchTodoError;
+exports.FETCH_DATA_SUCCESS = FETCH_DATA_SUCCESS;
+exports.fetchDataSuccess = fetchDataSuccess;
+exports.FETCH_DATA_ERROR = FETCH_DATA_ERROR;
+exports.fetchDataError = fetchDataError;
