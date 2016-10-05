@@ -1,17 +1,19 @@
 var express = require('express');
 var app = express();
+var routes = require('./routes')
 var passport = require('passport');
-var Strategy = require('passport-google-oauth20').Strategy;
+var googleStrategy = require('passport-google-oauth20').Strategy;
+var bearerStrategy = require('passport-http-bearer').Strategy;
 var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
+var words = require('./models/words');
 var mongoose = require('mongoose');
 var config = require('./config');
+//res.cookie('accessToken', req.user.accessToken, {expires:0, httpOnly: true });
 
-
-passport.use(new Strategy({
+passport.use(new googleStrategy({
     clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
     clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'http://localhost:3000/germanx'
+    callbackURL: 'http://localhost:3000/login/google/return'
   },
   function(accessToken, refreshToken, profile, cb) {
     // In this example, the user's Facebook profile is supplied as the user
@@ -22,26 +24,50 @@ passport.use(new Strategy({
     return cb(null, profile);
   }));
 
-  passport.serializeUser(function(user, cb) {
-  cb(null, user);
-});
-
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
-});
-
+//   passport.serializeUser(function(user, cb) {
+//   cb(null, user);
+// });
+//
+// passport.deserializeUser(function(obj, cb) {
+//   cb(null, obj);
+// });
+app.use(bodyParser.json());
 app.use('/', express.static('build'));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-app.get('/login/facebook',
+app.get('/login/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
-app.get('/login/facebook/return',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+app.get('/login/google/return',
+  passport.authenticate('google', { failureRedirect: '/login', session: false }),
   function(req, res) {
     res.redirect('/');
-  });
+});
+
+passport.use(new bearerStrategy(
+    function (token, done) {
+        console.log('token', token);
+        //TODO: find user with token then run callback with user
+        // if (token == 'Ci9zA8DD8I8WGVOuSTGWxT6j5liMz9buxSOFh9nHvam2docwk') {
+        if (token == '12345') {
+            var user = {user: 'bob'};
+            return done(null, user, {scope: 'read'});
+        } else {
+            return done(null, false);
+        }
+    }
+));
+
+app.get('/questions',
+  passport.authenticate('bearer', { failureRedirect: '/login', session: false }),
+  function(req, res) {
+    res.json(req.user);
+});
+
+app.use('/', routes)
+
+
 
 var runServer = function(callback) {
   mongoose.connect(config.DATABASE_URL, function(err) {
@@ -67,83 +93,6 @@ if (require.main === module) {
 };
 
 
-var words = [
-  {
-    id: '0',
-    german: 'heute',
-    english: 'today'
-  },
-  {
-    id: '1',
-    german: 'Woche',
-    english: 'week'
-  },
-  {
-    id: '2',
-    german: 'morgen',
-    english: 'tomorrow'
-  },
-  {
-    id: '3',
-    german: 'gestern',
-    english: 'yesterday'
-  },
-  {
-    id: '4',
-    german: 'Kalender',
-    english: 'calendar'
-  },
-  {
-    id: '5',
-    german: 'Stunde',
-    english: 'hour'
-  },
-  {
-    id: '6',
-    german: 'Sekunde',
-    english: 'second'
-  }
-]
-
-// var todoIndex = 3;
-//
-//
-// app.get('/api/words', function(req, res) {
-//   res.json({words: words})
-// });
-//
-// app.post('/api/status', jsonParser, function(req, res) {
-//   if (!('title' in req.body)) {
-//     return res.sendStatus(400);
-//   }
-//
-//   status.push({id: todoIndex, title: req.body.title, completed: req.body.completed});
-//   todoIndex++;
-//   res.status(201).json({todos: todos})
-// });
-//
-// app.put('/api/:id', jsonParser, function(req, res) {
-//   console.log(req.body)
-//   console.log(!('title' in req.body));
-//   console.log(!('status' in req.body));
-//
-//   if (!('title' in req.body ) && !('status' in req.body)) {
-//     return res.sendStatus(400);
-//   }
-//
-//   if (req.body.title) {
-//     todos[req.params.id].title = req.body.title
-//   };
-//
-//   if (req.body.status) {
-//     todos[req.params.id].completed = req.body.status
-//   };
-//   res.status(201).json({todos: todos})
-// });
-
-// app.listen(3000, function () {
-//   console.log('Listening at 3000!');
-// });
 
 exports.app = app;
 exports.runServer = runServer;
