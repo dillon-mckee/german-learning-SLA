@@ -26,10 +26,18 @@ var germanXReducer = function(state, action) {
 
       return newState;
   }
-    else if (action.type === actions.FETCH_DATA_ERROR) {
+    if (action.type === actions.FETCH_DATA_ERROR) {
       console.log(action.error);
-    }
+    };
     return state;
+    if (action.type === actions.START_GAME) {
+            console.log(state)
+      var newState = update(state, {
+        inProgress: {$set: 'true'}
+      });
+
+      return newState;
+    }
 };
 
 exports.germanXReducer = germanXReducer;

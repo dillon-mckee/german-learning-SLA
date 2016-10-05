@@ -149,10 +149,19 @@ var putStatus = function(id, status) {
     }
 };
 
+var START_GAME = 'START_GAME';
+var startGame = function() {
+    return {
+        type: START_GAME
+    }
+};
+
 exports.putStatus = putStatus;
 exports.putData = putData;
 exports.postData = postData;
 exports.fetchData = fetchData;
+exports.startGame = startGame;
+exports.START_GAME = START_GAME;
 
 exports.FETCH_DATA_SUCCESS = FETCH_DATA_SUCCESS;
 exports.fetchDataSuccess = fetchDataSuccess;
