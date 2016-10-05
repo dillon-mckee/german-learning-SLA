@@ -36,12 +36,3 @@ var List = React.createClass({
   }
 });
 
-var mapStateToProps = function(state, props) {
-    return {
-        todos: state.todos
-    };
-};
-
-var Container = connect(mapStateToProps)(List);
-
-module.exports = Container;

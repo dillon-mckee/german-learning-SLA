@@ -5,5 +5,5 @@ var thunk = require('redux-thunk').default;
 
 var reducers = require('./reducers');
 
-var store = createStore(reducers.todoReducer, applyMiddleware(thunk));
+var store = createStore(reducers.germanXReducer, applyMiddleware(thunk));
 module.exports = store;
