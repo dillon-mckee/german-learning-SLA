@@ -5,7 +5,6 @@ var actions = require('./actions');
 
 var store = require('./store');
 var LearningWindow = require('./LearningWindow');
-var Container = require('./LearningWindow');
 
 document.addEventListener('DOMContentLoaded', function() {
     ReactDOM.render(

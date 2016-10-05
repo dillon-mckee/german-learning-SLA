@@ -83,7 +83,7 @@ var todoIndex = 3;
 
 app.get('/api/words', function(req, res) {
   console.log(words);
-  res.json({data: words})
+  res.json(words)
 
 });
 

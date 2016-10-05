@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var connect = require('react-redux').connect;
 
 var Header = require('./Header');
 var NextButton = require('./NextButton');
@@ -10,8 +11,6 @@ var CorrectWordDisplay = require('./CorrectWordDisplay');
 var WelcomeMessage = require('./WelcomeMessage');
 var NewGameButton = require('./NewGameButton')
 var UserAnswerInput = require('./UserAnswerInput')
-
-var connect = require('react-redux').connect;
 
 var actions = require('./actions');
 
@@ -41,20 +40,36 @@ var LearningWindow = React.createClass({
     },
     componentDidMount: function() {
     this.props.dispatch(actions.fetchData());
-    console.log(this.props.status)
   },
 render: function() {
+    console.log(this.props.germanWord);
+    // var newGameButton;
+    // if (this.props.setComplete == 'false') {
+    //  newGameButton = null;
+    // } else {
+    //     newGameButton = <NewGameButton onClick={this.newGame}/>;
+    // }
     return(
         <div className='learning-window'>
         <Header/>
-        <WelcomeMessage user='bob' hasPlayed='true'/>
-        <WordDisplay germanWord="Woche"/>
-        <CorrectWordDisplay correctWord='week' />
-        <NextButton onClick={this.nextWord}/>
-        <Feedback isAnswerCorrect='false'/>
+        <WelcomeMessage user={this.props.user} hasPlayed={this.props.hasPlayed}/>
+        <WordDisplay germanWord={this.props.germanWord}/>
+        <CorrectWordDisplay correctWord={this.props.correctWord}/>
+{/*Hide/Show feedback and NextButton based off of props.answerSubmitted*/}
+        {this.props.answerSubmitted == 'true' ?
+            <div className='feedback-and-next'>
+            <Feedback isAnswerCorrect={this.props.isAnswerCorrect}/>
+            <NextButton onClick={this.nextWord}/>
+            </div>
+            : null
+                 }
         <UserAnswerInput value={this.state.userAnswer} handleChange={this.updateTextInput} onSubmit={this.handleSubmit}/>
-        <UserInfo user='bob' userScore='5'/>
-        <NewGameButton onClick={this.newGame}/>
+        <UserInfo user='bob' userScore={this.props.userScore}/>
+ {/*Hide/Show NewGameButton based off of props.setComplete*/}
+        {this.props.setComplete == 'false' ?
+            <NewGameButton onClick={this.newGame}/>
+            : null
+                 }
         </div>
         )
 }
@@ -63,7 +78,16 @@ render: function() {
 
 var mapStateToProps = function(state, props) {
     return {
-        status: state.status
+  answerSubmitted: state.answerSubmitted,
+  isAnswerCorrect: state.isAnswerCorrect,
+  user: state.user,
+  userScore: state.userScore,
+  correctWord: state.correctWord,
+  germanWord: state.germanWord,
+  hasPlayed: state.hasPlayed,
+  inProgress: state.inProgress,
+  isLoggedIn: state.isLoggedIn,
+  setComplete: state.setComplete
     };
 };
 
