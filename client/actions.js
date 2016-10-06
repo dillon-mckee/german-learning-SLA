@@ -14,10 +14,18 @@ var fetchDataError = function(error) {
     };
 };
 
+var Cookies = require('js-cookie')
+console.log(Cookies)
 var fetchData = function() {
     return function(dispatch) {
+        var token = Cookies.get('accessToken');
+
+        var headers = new Headers();
+        headers.append('Authorization', `Bearer ` + token);
+
         var url = 'http://localhost:3000/api/words';
-        return fetch(url).then(function(response) {
+        return fetch(url, {headers}).then(function(response) {
+          console.log(response)
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response

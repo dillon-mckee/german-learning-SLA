@@ -16,21 +16,16 @@ passport.use(new googleStrategy({
     callbackURL: 'http://localhost:3000/login/google/return'
   },
   function(accessToken, refreshToken, profile, cb) {
-    // In this example, the user's Facebook profile is supplied as the user
-    // record.  In a production-quality application, the Facebook profile should
-    // be associated with a user record in the application's database, which
-    // allows for account linking and authentication with other identity
-    // providers.
-    return cb(null, profile);
+console.log(profile);
+    var user = {
+      profile: profile.id,
+      accessToken: accessToken,
+      displayName: profile.displayName
+    }
+    return cb(null, user); //==>> req.user
   }));
 
-//   passport.serializeUser(function(user, cb) {
-//   cb(null, user);
-// });
-//
-// passport.deserializeUser(function(obj, cb) {
-//   cb(null, obj);
-// });
+
 app.use(bodyParser.json());
 app.use('/', express.static('build'));
 // app.use(passport.initialize());
@@ -42,6 +37,7 @@ app.get('/login/google',
 app.get('/login/google/return',
   passport.authenticate('google', { failureRedirect: '/login', session: false }),
   function(req, res) {
+    res.cookie('accessToken', req.user.accessToken, {expires: 0})
     res.redirect('/');
 });
 
@@ -50,7 +46,7 @@ passport.use(new bearerStrategy(
         console.log('token', token);
         //TODO: find user with token then run callback with user
         // if (token == 'Ci9zA8DD8I8WGVOuSTGWxT6j5liMz9buxSOFh9nHvam2docwk') {
-        if (token == '12345') {
+        if (token == 'ya29.Ci90A_lKgPFPE96p0CbZAElIUMmvjeIerSybBetjNH_PwOKfDfBJPgKtIlxsezlmZg') {
             var user = {user: 'bob'};
             return done(null, user, {scope: 'read'});
         } else {
@@ -59,7 +55,7 @@ passport.use(new bearerStrategy(
     }
 ));
 
-app.get('/questions',
+app.get('/api/words',
   passport.authenticate('bearer', { failureRedirect: '/login', session: false }),
   function(req, res) {
     res.json(req.user);
