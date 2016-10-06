@@ -51,6 +51,7 @@ render: function() {
         <div className='learning-window'>
 
 <button type="button" className="btn btn-warning"><a href="/login/google"> login </a></button>
+<button type="button" className="btn btn-warning"><a href="/logout"> logout </a></button>
         <Header/>
 
 {/*Hide/Show WelcomeMessage/StartButton and UserAnswerInput/UserInfo based off of props.inProgress*/}

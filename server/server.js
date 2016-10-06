@@ -59,25 +59,40 @@ passport.use(new bearerStrategy(
 // console.log("Log from line58", words);
 
 var questionIndex = 0;
+var userScore = 0;
 
 app.get('/api/words',
   passport.authenticate('bearer', {session: false }),
   function(req, res) {
-    res.json(words[questionIndex]);
+    res.json({words: words[questionIndex],
+              userScore: userScore});
     console.log(words[questionIndex]);
-    questionIndex++;
 });
 
 app.post('/api/words',
   passport.authenticate('bearer', {session: false }),
   function(req, res) {
-    console.log(req);
-    res.json(words[questionIndex]);
+    console.log(req.body);
+    var isAnswerCorrect;
+    var userAnswer = req.body.userAnswer;
+    console.log('word to compare', words[questionIndex].english)
+    if (userAnswer === words[questionIndex].english) {
+      userScore = userScore += 10;
+      isAnswerCorrect = 'true';
+    }
+    console.log(userScore);
+    res.json({words: words[questionIndex],
+              userScore: userScore,
+              isAnswerCorrect: isAnswerCorrect});
     console.log(words[questionIndex]);
-    console.log("postwords");
     questionIndex++;
 });
-
+app.get('/logout', function (req, res) {
+    console.log('req.user before', req.user)
+    req.logout();
+    console.log('req.user after', req.user)
+    res.redirect('/');
+});
 app.use('/', routes)
 
 

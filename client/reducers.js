@@ -21,8 +21,9 @@ var germanXReducer = function(state, action) {
     if (action.type === actions.FETCH_DATA_SUCCESS) {
       console.log(action.data)
       var newState = update(state, {
-        germanWord: {$set: action.data.german},
-        correctWord: {$set: action.data.english}
+        germanWord: {$set: action.data.words.german},
+        correctWord: {$set: action.data.words.english},
+        userScore: {$set: action.data.userScore}
       });
 
       return newState;
@@ -41,10 +42,12 @@ var germanXReducer = function(state, action) {
     }
     if (action.type === actions.POST_ANSWER_SUCCESS) {
       //TODO: handle right/wrong answer, score
-
+      console.log(action.data);
       var newState = update(state, {
-        germanWord: {$set: action.data.german},
-        correctWord: {$set: action.data.english},
+        isAnswerCorrect: {$set: action.data.isAnswerCorrect},
+        userScore: {$set: action.data.userScore},
+        //germanWord: {$set: action.data.word.german},
+        //correctWord: {$set: action.data.word.english},
         answerSubmitted: {$set: 'true'},
         buttonStyle: {display: {$set: 'none'}}
       });
@@ -54,15 +57,19 @@ var germanXReducer = function(state, action) {
       console.log(action.error);
     return state;
         };
-    if (action.type === actions.NEXT_WORD) {
+    if (action.type === actions.GET_NEXTWORD_SUCCESS) {
       console.log(action.data);
        var newState = update(state, {
-        //  germanWord: {$set: action.data.german},
-        // correctWord: {$set: action.data.english},
+        germanWord: {$set: action.data.words.german},
+        correctWord: {$set: action.data.words.english},
         answerSubmitted: {$set: 'false'},
         buttonStyle: {display: {$set: 'inline'}}
       });
        return newState;
+    }
+    else if (action.type === actions.GET_NEXTWORD_ERROR){
+      console.log(action.error);
+      return state;
     }
     return state;
 };

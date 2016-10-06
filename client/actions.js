@@ -83,6 +83,8 @@ var postData = function(userAnswer) {
     }
 };
 
+
+
 var POST_ANSWER_SUCCESS = 'POST_ANSWER_SUCCESS';
 var postAnswerSuccess = function(data) {
     return {
@@ -95,6 +97,22 @@ var POST_ANSWER_ERROR= 'POST_ANSWER_ERROR';
 var postAnswerError = function(error) {
     return {
         type: POST_ANSWER_ERROR,
+        error: error
+    };
+};
+
+var GET_NEXTWORD_SUCCESS = 'GET_NEXTWORD_SUCCESS';
+var getNextWordSuccess = function(data) {
+    return {
+        type: GET_NEXTWORD_SUCCESS,
+        data: data
+    };
+};
+
+var GET_NEXTWORD_ERROR= 'GET_NEXTWORD_ERROR';
+var getNextWordError = function(error) {
+    return {
+        type: GET_NEXTWORD_ERROR,
         error: error
     };
 };
@@ -180,8 +198,32 @@ var startGame = function() {
 
 var NEXT_WORD = 'NEXT_WORD';
 var nextWord = function() {
-    return {
-        type: NEXT_WORD
+    return function(dispatch) {
+       var token = Cookies.get('accessToken');
+       var headers = new Headers();
+       headers.append('Authorization', `Bearer ` + token);
+       var url = 'http://localhost:3000/api/words';
+       return fetch(url, {headers}).then(function(response) {
+            if (response.status < 200 || response.status >= 300) {
+                var error = new Error(response.statusText)
+                error.response = response
+                throw error;
+            }
+            return response;
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            return dispatch(
+                getNextWordSuccess(data)
+            );
+        })
+        .catch(function(error) {
+            return dispatch(
+                getNextWordError(error)
+            );
+        });
     }
 };
 
@@ -201,6 +243,11 @@ exports.POST_ANSWER_SUCCESS = POST_ANSWER_SUCCESS;
 exports.postAnswerSuccess = postAnswerSuccess;
 exports.POST_ANSWER_ERROR = POST_ANSWER_ERROR;
 exports.postAnswerError = postAnswerError;
+
+exports.GET_NEXTWORD_SUCCESS = GET_NEXTWORD_SUCCESS;
+exports.getNextWordSuccess = getNextWordSuccess;
+exports.GET_NEXTWORD_ERROR = GET_NEXTWORD_ERROR;
+exports.getNextWordError = getNextWordError;
 
 exports.NEXT_WORD = NEXT_WORD;
 exports.nextWord = nextWord;
