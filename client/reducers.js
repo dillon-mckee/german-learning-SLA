@@ -55,9 +55,10 @@ var germanXReducer = function(state, action) {
     return state;
         };
     if (action.type === actions.NEXT_WORD) {
+      console.log(action.data);
        var newState = update(state, {
-         germanWord: {$set: action.data.german},
-        correctWord: {$set: action.data.english},
+        //  germanWord: {$set: action.data.german},
+        // correctWord: {$set: action.data.english},
         answerSubmitted: {$set: 'false'},
         buttonStyle: {display: {$set: 'inline'}}
       });

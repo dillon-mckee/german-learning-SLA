@@ -52,13 +52,13 @@ var postData = function(userAnswer) {
         var token = Cookies.get('accessToken');
         var headers = new Headers();
         headers.append('Authorization', `Bearer ` + token);
-
+        headers.append('Content-Type', 'application/json');
+        console.log(headers);
+        var url = 'http://localhost:3000/api/words';
         return fetch(url, {
       	  method: 'POST',
           body: JSON.stringify({userAnswer: userAnswer}),
-          headers: new Headers({
-		          'Content-Type': 'application/json'
-	        })
+          headers: headers
         }).then(function(response) {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)

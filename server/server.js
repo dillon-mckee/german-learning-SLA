@@ -5,7 +5,7 @@ var passport = require('passport');
 var googleStrategy = require('passport-google-oauth20').Strategy;
 var bearerStrategy = require('passport-http-bearer').Strategy;
 var bodyParser = require('body-parser');
-var words = require('./words').words;
+var words = require('./models/words').words
 var mongoose = require('mongoose');
 var config = require('./config');
 //res.cookie('accessToken', req.user.accessToken, {expires:0, httpOnly: true });
@@ -16,7 +16,7 @@ passport.use(new googleStrategy({
     callbackURL: 'http://localhost:3000/login/google/return'
   },
   function(accessToken, refreshToken, profile, cb) {
-console.log(profile);
+//console.log(profile);
     var user = {
       profile: profile.id,
       accessToken: accessToken,
@@ -35,8 +35,9 @@ app.get('/login/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/login/google/return',
-  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  passport.authenticate('google', { scope: ['profile'], failureRedirect: '/login/google', session: false }),
   function(req, res) {
+    //console.log("return log", res);
     res.cookie('accessToken', req.user.accessToken, {expires: 0})
     res.redirect('/');
 });
@@ -46,7 +47,7 @@ passport.use(new bearerStrategy(
         console.log('token', token);
         //TODO: find user with token then run callback with user
         // if (token == 'Ci9zA8DD8I8WGVOuSTGWxT6j5liMz9buxSOFh9nHvam2docwk') {
-        if (token == 'ya29.Ci90AxP6YYSqLCmCrCRwXRR7j0wzfkZ8XBt9gsK6u5NJYRhfMhiaAma3LVlYmAScjA') {
+        if (token == 'ya29.Ci90A-2oLWLKwrg-TxU4-v6lOglU1OaG2yhSk9cYQmZK3A_Ey-Diq9uNGD_YaV2ggg') {
             var user = {user: 'bob'};
             return done(null, user, {scope: 'read'});
         } else {
@@ -60,7 +61,7 @@ passport.use(new bearerStrategy(
 var questionIndex = 0;
 
 app.get('/api/words',
-  passport.authenticate('bearer', { failureRedirect: '/login', session: false }),
+  passport.authenticate('bearer', {session: false }),
   function(req, res) {
     res.json(words[questionIndex]);
     console.log(words[questionIndex]);
@@ -68,11 +69,12 @@ app.get('/api/words',
 });
 
 app.post('/api/words',
-  passport.authenticate('bearer', { failureRedirect: '/login', session: false }),
+  passport.authenticate('bearer', {session: false }),
   function(req, res) {
-    console.log(token);
+    console.log(req);
     res.json(words[questionIndex]);
     console.log(words[questionIndex]);
+    console.log("postwords");
     questionIndex++;
 });
 
