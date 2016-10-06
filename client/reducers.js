@@ -19,7 +19,7 @@ var initialState = {
 var germanXReducer = function(state, action) {
     state = state || initialState;
     if (action.type === actions.FETCH_DATA_SUCCESS) {
-      // TODO: add react immutability helpers
+      console.log(action.data)
       var newState = update(state, {
         germanWord: {$set: action.data.german},
         correctWord: {$set: action.data.english}

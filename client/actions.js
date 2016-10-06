@@ -1,3 +1,6 @@
+var Cookies = require('js-cookie')
+console.log(Cookies)
+
 var FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS';
 var fetchDataSuccess = function(data) {
     return {
@@ -15,9 +18,12 @@ var fetchDataError = function(error) {
 };
 
 var fetchData = function() {
-    return function(dispatch) {
-        var url = 'http://localhost:3000/api/words';
-        return fetch(url).then(function(response) {
+      return function(dispatch) {
+       var token = Cookies.get('accessToken');
+       var headers = new Headers();
+       headers.append('Authorization', `Bearer ` + token);
+       var url = 'http://localhost:3000/api/words';
+       return fetch(url, {headers}).then(function(response) {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response
@@ -43,7 +49,10 @@ var fetchData = function() {
 
 var postData = function(userAnswer) {
     return function(dispatch) {
-        var url = 'http://localhost:3000/api/status';
+        var token = Cookies.get('accessToken');
+        var headers = new Headers();
+        headers.append('Authorization', `Bearer ` + token);
+
         return fetch(url, {
       	  method: 'POST',
           body: JSON.stringify({userAnswer: userAnswer}),
