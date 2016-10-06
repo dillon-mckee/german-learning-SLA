@@ -30,14 +30,15 @@ var LearningWindow = React.createClass({
     },
     handleSubmit: function(event) {
     event.preventDefault();
-    console.log(userAnswer);
-    //this.props.dispatch(actions.postData(e.target.value));
+    console.log(this.props);
+    this.props.dispatch(actions.postData(this.state.userAnswer));
     },
     startGame: function(){
         this.props.dispatch(actions.startGame());
+        console.log(this.props);
     },
     nextWord: function() {
-    ReactDOM.findDOMNode(this.refs.myInput).value = "";
+        this.props.dispatch(actions.nextWord());
     },
     newGame: function(){
 
@@ -46,7 +47,6 @@ var LearningWindow = React.createClass({
     this.props.dispatch(actions.fetchData());
   },
 render: function() {
-    console.log(this.props.germanWord);
     return(
         <div className='learning-window'>
         <Header/>
@@ -60,21 +60,24 @@ render: function() {
             :
         <div className='word-displays-and-input-and-userinfo'>
         <WordDisplay germanWord={this.props.germanWord}/>
-        <CorrectWordDisplay correctWord={this.props.correctWord}/>
-        <UserAnswerInput value={this.state.userAnswer} handleChange={this.updateTextInput} onSubmit={this.handleSubmit}/>
+{/*Hide/Show CorrectWordDisplay, feedback and NextButton based off of props.answerSubmitted*/}
+        {this.props.answerSubmitted == 'true' ?
+         <div className='feedback-and-next-and-word-display'>
+         <CorrectWordDisplay correctWord={this.props.correctWord}/>
+            </div>
+            : null
+        }
+        <UserAnswerInput buttonStyle={this.props.buttonStyle} value={this.state.userAnswer} handleChange={this.updateTextInput} handleSubmit={this.handleSubmit}/>
+        {this.props.answerSubmitted == 'true' ?
+         <div className='feedback-and-next'>
+         <Feedback isAnswerCorrect={this.props.isAnswerCorrect}/>
+         <NextButton nextWord={this.nextWord}/>
+            </div>
+            : null
+        }
         <UserInfo user={this.props.user} userScore={this.props.userScore}/>
         </div>
                  }
-
-{/*Hide/Show feedback and NextButton based off of props.answerSubmitted*/}
-        {this.props.answerSubmitted == 'true' ?
-            <div className='feedback-and-next'>
-            <Feedback isAnswerCorrect={this.props.isAnswerCorrect}/>
-            <NextButton onClick={this.nextWord}/>
-            </div>
-            : null
-                 }
-
  {/*Hide/Show NewGameButton based off of props.setComplete*/}
         {this.props.setComplete == 'true' ?
             <NewGameButton onClick={this.newGame}/>
@@ -96,7 +99,10 @@ var mapStateToProps = function(state, props) {
   hasPlayed: state.hasPlayed,
   inProgress: state.inProgress,
   isLoggedIn: state.isLoggedIn,
-  setComplete: state.setComplete
+  setComplete: state.setComplete,
+  buttonStyle: state.buttonStyle,
+  nextGermanWord: state.nextGermanWord,
+  nextEnglishWord: state.nextEnglishWord
     };
 };
 

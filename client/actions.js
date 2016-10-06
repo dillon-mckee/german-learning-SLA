@@ -41,12 +41,12 @@ var fetchData = function() {
     }
 };
 
-var postData = function(title) {
+var postData = function(userAnswer) {
     return function(dispatch) {
-        var url = 'http://localhost:3000/api/all';
+        var url = 'http://localhost:3000/api/status';
         return fetch(url, {
       	  method: 'POST',
-          body: JSON.stringify({title: title}),
+          body: JSON.stringify({userAnswer: userAnswer}),
           headers: new Headers({
 		          'Content-Type': 'application/json'
 	        })
@@ -63,18 +63,31 @@ var postData = function(title) {
         })
         .then(function(data) {
             return dispatch(
-                fetchTodoSuccess(data)
-                // I'm using the same success and error actions,
-                // but you might want to use different actions
-                // for these functions.
+                postAnswerSuccess(data)
             );
         })
         .catch(function(error) {
             return dispatch(
-                fetchTodoError(error)
+                postAnswerError(error)
             );
         });
     }
+};
+
+var POST_ANSWER_SUCCESS = 'POST_ANSWER_SUCCESS';
+var postAnswerSuccess = function(data) {
+    return {
+        type: POST_ANSWER_SUCCESS,
+        data: data
+    };
+};
+
+var POST_ANSWER_ERROR= 'POST_ANSWER_ERROR';
+var postAnswerError = function(error) {
+    return {
+        type: POST_ANSWER_ERROR,
+        error: error
+    };
 };
 
 var putData = function(id, title) {
@@ -156,6 +169,13 @@ var startGame = function() {
     }
 };
 
+var NEXT_WORD = 'NEXT_WORD';
+var nextWord = function() {
+    return {
+        type: NEXT_WORD
+    }
+};
+
 exports.putStatus = putStatus;
 exports.putData = putData;
 exports.postData = postData;
@@ -167,3 +187,11 @@ exports.FETCH_DATA_SUCCESS = FETCH_DATA_SUCCESS;
 exports.fetchDataSuccess = fetchDataSuccess;
 exports.FETCH_DATA_ERROR = FETCH_DATA_ERROR;
 exports.fetchDataError = fetchDataError;
+
+exports.POST_ANSWER_SUCCESS = POST_ANSWER_SUCCESS;
+exports.postAnswerSuccess = postAnswerSuccess;
+exports.POST_ANSWER_ERROR = POST_ANSWER_ERROR;
+exports.postAnswerError = postAnswerError;
+
+exports.NEXT_WORD = NEXT_WORD;
+exports.nextWord = nextWord;

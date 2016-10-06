@@ -4,7 +4,7 @@ var ReactDOM = require('react-dom');
 var NextButton = function(props) {
    return (
     <div className="next-button">
-    <input type="button" value="Next" onClick={props.onClick}>
+    <input type="button" value="Next" onClick={props.nextWord}>
     </input>
     </div>
     );

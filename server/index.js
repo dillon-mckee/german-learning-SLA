@@ -78,23 +78,24 @@ var words = [
   }
 ]
 
-var todoIndex = 3;
+var questionIndex = 0;
 
+var userScore = 0;
 
 app.get('/api/words', function(req, res) {
   console.log(words);
-  res.json(words)
+   questionIndex++;
+
+  res.status(201).json(words[questionIndex])
 
 });
 
 app.post('/api/status', jsonParser, function(req, res) {
-  if (!('title' in req.body)) {
-    return res.sendStatus(400);
-  }
 
-  status.push({id: todoIndex, title: req.body.title, completed: req.body.completed});
-  todoIndex++;
-  res.status(201).json({todos: todos})
+  console.log(req.body);
+  questionIndex++;
+  res.status(201).json(words[questionIndex])
+
 });
 
 app.put('/api/:id', jsonParser, function(req, res) {
