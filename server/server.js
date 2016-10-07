@@ -47,7 +47,7 @@ passport.use(new bearerStrategy(
         console.log('token', token);
         //TODO: find user with token then run callback with user
         // if (token == 'Ci9zA8DD8I8WGVOuSTGWxT6j5liMz9buxSOFh9nHvam2docwk') {
-        if (token == 'ya29.Ci90A-2oLWLKwrg-TxU4-v6lOglU1OaG2yhSk9cYQmZK3A_Ey-Diq9uNGD_YaV2ggg') {
+        if (token) {//== 'ya29.Ci90A7FswNwfeEhC-r9nKQUkmCCUEXqzaBl3Qe3hB6EnaZGU74rr47WhtB835smvhg') {
             var user = {user: 'bob'};
             return done(null, user, {scope: 'read'});
         } else {
