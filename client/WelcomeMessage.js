@@ -7,7 +7,7 @@ var WelcomeMessage = function(props) {
     {props.hasPlayed == 'false'
         ?
         <h3>
-        Hello {props.user}, welcome to GermanX, ready to get started?
+        Welcome to GermanX, ready to get started?
         </h3>
         :
         <h3>

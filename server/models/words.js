@@ -23,16 +23,15 @@ module.exports.words = [
     id: '4',
     german: 'Kalender',
     english: 'calendar'
-  },
-  {
-    id: '5',
-    german: 'Stunde',
-    english: 'hour'
-  },
-  {
-    id: '6',
-    german: 'Sekunde',
-    english: 'second'
-  }
-];
-
+  }];
+//   {
+//     id: '5',
+//     german: 'Stunde',
+//     english: 'hour'
+//   },
+//   {
+//     id: '6',
+//     german: 'Sekunde',
+//     english: 'second'
+//   }
+// ];

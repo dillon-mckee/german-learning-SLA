@@ -21,8 +21,8 @@ var germanXReducer = function(state, action) {
     if (action.type === actions.FETCH_DATA_SUCCESS) {
       console.log(action.data)
       var newState = update(state, {
-        germanWord: {$set: action.data.words.german},
-        correctWord: {$set: action.data.words.english},
+        germanWord: {$set: action.data.algorithm.german},
+        correctWord: {$set: action.data.algorithm.english},
         userScore: {$set: action.data.userScore}
       });
 
@@ -60,8 +60,8 @@ var germanXReducer = function(state, action) {
     if (action.type === actions.GET_NEXTWORD_SUCCESS) {
       console.log(action.data);
        var newState = update(state, {
-        germanWord: {$set: action.data.words.german},
-        correctWord: {$set: action.data.words.english},
+        germanWord: {$set: action.data.algorithm.german},
+        correctWord: {$set: action.data.algorithm.english},
         answerSubmitted: {$set: 'false'},
         buttonStyle: {display: {$set: 'inline'}}
       });
