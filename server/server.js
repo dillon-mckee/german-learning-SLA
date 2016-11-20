@@ -9,6 +9,7 @@ var algorithm = require('./models/algorithm');
 var mongoose = require('mongoose');
 var config = require('./config');
 var User = require('./models/users');
+var words = require('./models/words')
 
 
 passport.use(new bearerStrategy(
@@ -107,15 +108,26 @@ app.post('/api/words',
   passport.authenticate('bearer', {session: false }),
   function(req, res) {
     // console.log(req.body);
+    var idx = algorithm[questionIndex].id;
     var isAnswerCorrect;
     var userAnswer = req.body.userAnswer;
     // console.log('word to compare', algorithm[questionIndex].english)
     if (userAnswer === algorithm[questionIndex].english) {
+
+
+      console.log("idx: ",idx)
+      words.words[idx].correct += 1
+      words.words[idx].last += 1
+      words.words[idx].attempted = true
+      console.log("words: ",words.words[idx]);
       userScore = userScore += 10;
       isAnswerCorrect = 'true';
     } else {
       userScore = userScore;
       isAnswerCorrect = 'false';
+      words.words[idx].last += 1
+      words.words[idx].attempted = true
+      console.log("words: ",words.words[idx]);
     }
     // console.log(userScore);
     res.json({algorithm: algorithm[questionIndex],
