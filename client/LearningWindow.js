@@ -49,35 +49,39 @@ var LearningWindow = React.createClass({
 render: function() {
     return(
         <div className='learning-window'>
+            <section>
+                <span>
+            <button type="button" className="button"><a href="/login/google"> login </a></button>
+        </span>
+            <button type="button" className="button"><a href="/logout"> logout </a></button>
+            <Header/>
+            </section>
 
-<button type="button" className="btn btn-warning"><a href="/login/google"> login </a></button>
-<button type="button" className="btn btn-warning"><a href="/logout"> logout </a></button>
-        <Header/>
-
-{/*Hide/Show WelcomeMessage/StartButton and UserAnswerInput/UserInfo based off of props.inProgress*/}
-        {this.props.inProgress == 'false' ?
-            <div className='welcome-and-start'>
-            <WelcomeMessage user={this.props.user} hasPlayed={this.props.hasPlayed}/>
-            <StartButton handleStart={this.startGame}/>
-            </div>
-            :
-        <div className='word-displays-and-input-and-userinfo'>
-        <WordDisplay germanWord={this.props.germanWord}/>
-{/*Hide/Show CorrectWordDisplay, feedback and NextButton based off of props.answerSubmitted*/}
-        {this.props.answerSubmitted == 'true' ?
-         <div className='feedback-and-next-and-word-display'>
-         <CorrectWordDisplay correctWord={this.props.correctWord}/>
-            </div>
-            : null
-        }
-        <UserAnswerInput buttonStyle={this.props.buttonStyle} value={this.state.userAnswer} handleChange={this.updateTextInput} handleSubmit={this.handleSubmit}/>
-        {this.props.answerSubmitted == 'true' ?
-         <div className='feedback-and-next'>
-         <Feedback isAnswerCorrect={this.props.isAnswerCorrect}/>
-         <NextButton nextWord={this.nextWord}/>
-            </div>
-            : null
-        }
+            {/*Hide/Show WelcomeMessage/StartButton and UserAnswerInput/UserInfo based off of props.inProgress*/}
+            <section>
+            {this.props.inProgress == 'false' ?
+                <div className='welcome-and-start'>
+                    <WelcomeMessage user={this.props.user} hasPlayed={this.props.hasPlayed}/>
+                    <StartButton handleStart={this.startGame}/>
+                </div>
+                :
+                <div className='word-displays-and-input-and-userinfo'>
+                    <WordDisplay germanWord={this.props.germanWord}/>
+                    <span>
+                    {/*Hide/Show CorrectWordDisplay, feedback and NextButton based off of props.answerSubmitted*/}
+                    {this.props.answerSubmitted == 'true' ?
+                            <CorrectWordDisplay correctWord={this.props.correctWord}/>
+                        : null
+                    }
+                </span>
+                    <UserAnswerInput buttonStyle={this.props.buttonStyle} value={this.state.userAnswer} handleChange={this.updateTextInput} handleSubmit={this.handleSubmit}/>
+                    {this.props.answerSubmitted == 'true' ?
+                    <span>
+                            <Feedback isAnswerCorrect={this.props.isAnswerCorrect}/>
+                            <NextButton nextWord={this.nextWord}/>
+                        </span>
+                        : <span></span>
+                    }
         <UserInfo user={this.props.user} userScore={this.props.userScore}/>
         </div>
                  }
@@ -86,7 +90,9 @@ render: function() {
             <NewGameButton onClick={this.newGame}/>
             : null
                  }
+                 </section>
         </div>
+
         )
 }
 });

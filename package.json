@@ -7,15 +7,18 @@
     "test": "mocha --compilers js:babel-register test/**/*.js*",
     "mkdir": "mkdir -p build",
     "clean": "rm -rf build",
-    "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:js",
+    "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:js && npm run build:css",
     "serve": "nodemon server/server",
-    "watch": "npm run watch:html & npm run watch:js",
+    "watch": "npm run watch:html & npm run watch:js & npm run watch:css",
     "watch:html": "npm run build:html && chokidar index.html -c 'npm run build:html'",
     "build:html": "npm run clean:html && cp index.html build/",
     "clean:html": "rm -f build/index.html",
     "watch:js": "npm run build:js && webpack --watch",
     "build:js": "npm run clean:js && webpack",
     "clean:js": "rm -f build/$npm_package_name.$npm_package_version.js build/$npm_package_name.$npm_package_version.js.map",
+    "build:css": "npm run clean:css && lessc --source-map client/css/style.less build/$npm_package_name.$npm_package_version.css",
+    "watch:css": "npm run build:css && chokidar 'client/css/**/*.less' -c 'npm run build:css'",
+    "clean:css": "rm -f build/$npm_package_name.$npm_package_version.css build/$npm_package_name.$npm_package_version.css.map",
     "dev": "npm run watch & npm run serve"
   },
   "author": "",
@@ -46,7 +49,8 @@
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.9.0",
     "chokidar-cli": "^1.2.0",
-    "webpack": "^1.13.1",
-    "nodemon": "^1.10.2"
+    "less": "^2.7.1",
+    "nodemon": "^1.10.2",
+    "webpack": "^1.13.1"
   }
 }
