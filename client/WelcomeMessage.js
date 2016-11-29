@@ -8,7 +8,7 @@ var WelcomeMessage = function(props) {
         ?
         <p>
         Hello {props.user}, welcome to German-X, ready to get started?
-    </p>
+        </p>
         :
         <p>
        Welcome back {props.user}, your previous score was {props.userScore}, ready to start again?
