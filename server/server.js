@@ -13,7 +13,7 @@ var config = require('./config');
 passport.use(new googleStrategy({
     clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
     clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'http://localhost:3000/login/google/return'
+    callbackURL: 'http://localhost:3000/auth/google/callback'
   },
   function(accessToken, refreshToken, profile, cb) {
 //console.log(profile);
@@ -34,7 +34,7 @@ app.use('/', express.static('build'));
 app.get('/login/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
-app.get('/login/google/return',
+app.get('/auth/google/return',
   passport.authenticate('google', { scope: ['profile'], failureRedirect: '/login/google', session: false }),
   function(req, res) {
     //console.log("return log", res);

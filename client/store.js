@@ -1,9 +1,7 @@
-var redux = require('redux');
-var createStore = redux.createStore;
-var applyMiddleware = redux.applyMiddleware;
-var thunk = require('redux-thunk').default;
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-var reducers = require('./reducers');
+import germanXReducer from './reducers';
 
-var store = createStore(reducers.germanXReducer, applyMiddleware(thunk));
-module.exports = store;
+const store = createStore(germanXReducer, applyMiddleware(thunk));
+export default store;
