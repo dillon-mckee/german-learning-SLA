@@ -98,7 +98,7 @@ app.get('/auth/google/callback',
   function(req, res) {
     // console.log("return log", res);
     res.cookie('accessToken', req.user.accessToken, {expires: 0})
-    res.redirect('/');
+    res.redirect('/#/learn');
 });
 
 

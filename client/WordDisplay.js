@@ -3,9 +3,10 @@ var ReactDOM = require('react-dom');
 
 var WordDisplay = function(props) {
     return(
-    <div className ='word-display'>
+        <p>
     {props.germanWord}
-    </div>
+</p>
+
     );
 }
 

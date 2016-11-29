@@ -5,8 +5,9 @@ var Login = function(props) {
    return (
     <div className="login-button">
     <Banner/>
-    <input type="button" value="Login with Google" onClick={props.onClick}>
-    </input>
+    <section>
+<button type="button" className="button"><a href="/auth/google"> login </a></button>
+</section>
     </div>
     );
 };

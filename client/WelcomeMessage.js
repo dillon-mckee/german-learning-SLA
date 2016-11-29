@@ -6,13 +6,13 @@ var WelcomeMessage = function(props) {
     <div className = 'welcome-message'>
     {props.hasPlayed == 'false'
         ?
-        <h3>
-        Welcome to GermanX, ready to get started?
-        </h3>
+        <p>
+        Hello {props.user}, welcome to German-X, ready to get started?
+        </p>
         :
-        <h3>
+        <p>
        Welcome back {props.user}, your previous score was {props.userScore}, ready to start again?
-       </h3>
+   </p>
    }
     </div>
     )

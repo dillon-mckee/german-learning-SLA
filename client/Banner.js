@@ -5,7 +5,9 @@ var ReactDOM = require('react-dom');
 var Banner = function() {
     return (
         <div className="banner">
-        <h1>GermanX</h1>
+            <section>
+        <p>German-X</p>
+    </section>
         <p>Learn German through repetition!</p>
         </div>
         );
