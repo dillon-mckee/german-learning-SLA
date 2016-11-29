@@ -5,13 +5,14 @@ var passport = require('passport');
 var googleStrategy = require('passport-google-oauth20').Strategy;
 var bearerStrategy = require('passport-http-bearer').Strategy;
 var bodyParser = require('body-parser');
-var algorithm = require('./models/algorithm');
+//var algorithm = require('./models/algorithm');
 var mongoose = require('mongoose');
 var config = require('./config');
 var User = require('./models/users');
-var words = require('./models/words')
+var words = require('./models/words').words;
 
-
+app.use(bodyParser.json());
+app.use('/', express.static('build'));
 passport.use(new bearerStrategy(
     function (token, done) {
       User.findOne({accessToken: token},
@@ -22,7 +23,7 @@ passport.use(new bearerStrategy(
           if(!user) {
             return done(null, false);
           }
-          return done(null, user, { scope: ['https://www.googleapis.com/auth/plus.login'] })
+          return done(null, user, { scope: 'read' })
         });
 
         // // console.log('token', token);
@@ -42,46 +43,57 @@ passport.use(new bearerStrategy(
 passport.use(new googleStrategy({
     clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
     clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'http://localhost:3000/login/google/return'
+    callbackURL: 'http://localhost:3000/auth/google/callback'
   },
   function(accessToken, refreshToken, profile, done) {
-//console.log(profile);
+console.log(profile);
     // var user = {
     //   profile: profile.id,
     //   accessToken: accessToken,
     //   displayName: profile.displayName
     // }
     // return cb(null, user); //==>> req.user
-    User.findOneAndUpdate(
-     	{googleId: profile.id},
-	    {
-	    	displayName: profile.displayName,
-	    	accessToken: accessToken
-      },
-	    {	upsert:true,
-	    	new:true,
-        setDefaultsOnInsert: true
-	    },
-	    function(err, user){
-      		if(err){
-      			console.log('error: ', err);
-      		} else {
-      			console.log('displayName:', user);
-      			return done(null, user);
-      		}}
+    User.findOne({googleID: profile.id}, function(err, user) {
+      if (!user) {
+        User.create({
+          googleID: profile.id,
+          accessToken: accessToken,
+          displayName: profile.displayName,
+          words: words
+        }, function(err, user) {
+          return done(err, user);
+        });
+      } else {
+        return done(err, user);
+      }
+    }
+     // 	{googleId: profile.id},
+	    // {
+	    // 	displayName: profile.displayName,
+	    // 	accessToken: accessToken
+      // },
+	    // {	upsert:true,
+	    // 	new:true,
+      //   setDefaultsOnInsert: true
+	    // },
+	    // function(err, user){
+      // 		if(err){
+      // 			console.log('error: ', err);
+      // 		} else {
+      // 			console.log('displayName:', user);
+      // 			return done(null, user);
+      // 		}}
      );
   }));
 
 
-app.use(bodyParser.json());
-app.use('/', express.static('build'));
+
 // app.use(passport.initialize());
 // app.use(passport.session());
 
-app.get('/login/google',
+app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile'] }));
-
-app.get('/login/google/return',
+app.get('/auth/google/callback',
   passport.authenticate('google', { scope: ['profile'], failureRedirect: '/login/google', session: false }),
   function(req, res) {
     // console.log("return log", res);
@@ -116,18 +128,18 @@ app.post('/api/words',
 
 
       console.log("idx: ",idx)
-      words.words[idx].correct += 1
-      words.words[idx].last += 1
-      words.words[idx].attempted = true
-      console.log("words: ",words.words[idx]);
+      words[idx].correct += 1
+      words[idx].last += 1
+      words[idx].attempted = true
+      console.log("words: ",words[idx]);
       userScore = userScore += 10;
       isAnswerCorrect = 'true';
     } else {
       userScore = userScore;
       isAnswerCorrect = 'false';
-      words.words[idx].last += 1
-      words.words[idx].attempted = true
-      console.log("words: ",words.words[idx]);
+      words[idx].last += 1
+      words[idx].attempted = true
+      console.log("words: ",words[idx]);
     }
     // console.log(userScore);
     res.json({algorithm: algorithm[questionIndex],

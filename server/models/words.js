@@ -3,23 +3,23 @@ module.exports.words = [
     id: '0',
     german: 'heute',
     english: 'today',
-    last: 2,
-    correct: 1,
+    last: 0,
+    correct: 0,
     attempted: false
   },
   {
     id: '1',
     german: 'Woche',
     english: 'week',
-    last: 3,
-    correct: 1,
+    last: 0,
+    correct: 0,
     attempted: false
   },
   {
     id: '2',
     german: 'morgen',
     english: 'tomorrow',
-    last: 3,
+    last: 0,
     correct: 0,
     attempted: false
   },
@@ -27,32 +27,32 @@ module.exports.words = [
     id: '3',
     german: 'gestern',
     english: 'yesterday',
-    last: 3,
-    correct: 3,
+    last: 0,
+    correct: 0,
     attempted: false
   },
   {
     id: '4',
     german: 'Kalender',
     english: 'calendar',
-    last: 3,
-    correct: 1,
+    last: 0,
+    correct: 0,
     attempted: false
   },
   {
       id: '5',
       german: 'Stunde',
       english: 'hour',
-      last: 3,
-      correct: 1,
+      last: 0,
+      correct: 0,
       attempted: false
     },
     {
       id: '6',
       german: 'Sekunde',
       english: 'second',
-      last: 3,
-      correct: 1,
+      last: 0,
+      correct: 0,
       attempted: false
     }
   ];
