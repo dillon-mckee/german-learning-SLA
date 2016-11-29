@@ -1,4 +1,5 @@
 var React = require('react');
+var React = require('react');
 var ReactDOM = require('react-dom');
 
 var UserAnswerInput = function(props) {
