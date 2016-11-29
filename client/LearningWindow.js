@@ -50,9 +50,6 @@ render: function() {
     return(
         <div className='learning-window'>
             <section>
-                <span>
-            <button type="button" className="button"><a href="/login/google"> login </a></button>
-        </span>
             <button type="button" className="button"><a href="/logout"> logout </a></button>
             <Header/>
             </section>
