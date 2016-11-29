@@ -6,7 +6,7 @@ var Login = function(props) {
     <div className="login-button">
     <Banner/>
     <section>
-<button type="button" className="button"><a href="/login/google"> login </a></button>
+<button type="button" className="button"><a href="/auth/google"> login </a></button>
 </section>
     </div>
     );
