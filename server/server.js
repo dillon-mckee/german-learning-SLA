@@ -31,15 +31,15 @@ app.use('/', express.static('build'));
 // app.use(passport.initialize());
 // app.use(passport.session());
 
-app.get('/login/google',
+app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
-app.get('/auth/google/return',
+app.get('/auth/google/callback',
   passport.authenticate('google', { scope: ['profile'], failureRedirect: '/login/google', session: false }),
   function(req, res) {
     //console.log("return log", res);
     res.cookie('accessToken', req.user.accessToken, {expires: 0})
-    res.redirect('/');
+    res.redirect('/#/learn');
 });
 
 passport.use(new bearerStrategy(
