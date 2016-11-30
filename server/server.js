@@ -110,10 +110,21 @@ var userScore = 0;
 app.get('/api/words',
   passport.authenticate('bearer', {session: false }),
   function(req, res) {
+    var googleID = req.user.googleID
     // ask mongoose for the array, then call alogrithm([)
-    res.json({algorithm: algorithm[questionIndex],
-              userScore: userScore});
-    console.log(algorithm[questionIndex]);
+    User.findOne({googleID: googleID}), function(err, user) {
+      if(err) {
+        console.log("user error: " )
+        res.send("Error has occured")
+      } else {
+        console.log("user: ",user);
+        res.json(user);
+      }
+    }
+
+    // res.json({algorithm: algorithm[questionIndex],
+    //           userScore: userScore});
+    // console.log(algorithm[questionIndex]);
 });
 
 app.post('/api/words',
@@ -127,11 +138,11 @@ app.post('/api/words',
     if (userAnswer === algorithm[questionIndex].english) {
 
 
-      console.log("idx: ",idx)
+      // console.log("idx: ",idx)
       words[idx].correct += 1
       words[idx].last += 1
       words[idx].attempted = true
-      console.log("words: ",words[idx]);
+      // console.log("words: ",words[idx]);
       userScore = userScore += 10;
       isAnswerCorrect = 'true';
     } else {
@@ -139,7 +150,7 @@ app.post('/api/words',
       isAnswerCorrect = 'false';
       words[idx].last += 1
       words[idx].attempted = true
-      console.log("words: ",words[idx]);
+      // console.log("words: ",words[idx]);
     }
     // console.log(userScore);
     res.json({algorithm: algorithm[questionIndex],
