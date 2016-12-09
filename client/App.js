@@ -1,18 +1,19 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-var App = function(props){
-
-	return (
-		<div id="App">
-			{props.children}
-		</div>
-
-		)
+import React from 'react';
 
 
+class App extends React.Component {
+	constructor(props){
+		super(props);
+	};
+	render() {
+		return (
+			<div id="App">
+				{this.props.children}
+			</div>
+
+			)
+	}
+}
 
 
-};
-
-module.exports = App;
+export default App;

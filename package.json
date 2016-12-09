@@ -2,7 +2,7 @@
   "name": "starter-template",
   "version": "1.0.0",
   "description": "",
-  "main": "client/index.js",
+  "main": "client/main.js",
   "scripts": {
     "test": "mocha --compilers js:babel-register test/**/*.js*",
     "mkdir": "mkdir -p build",

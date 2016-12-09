@@ -1,7 +1,8 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Banner = require('./Banner');
-var Login = function(props) {
+import React from 'react';
+import Banner from './Banner';
+
+
+const Login = () => {
    return (
     <div className="login-button">
     <Banner/>
@@ -12,4 +13,4 @@ var Login = function(props) {
     );
 };
 
-module.exports = Login;
+export default Login

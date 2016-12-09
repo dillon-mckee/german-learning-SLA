@@ -1,47 +1,45 @@
-var Cookies = require('js-cookie')
+import Cookies from 'js-cookie';
 console.log(Cookies)
 
-var FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS';
-var fetchDataSuccess = function(data) {
+export const FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS';
+export const fetchDataSuccess = (data) => {
     return {
         type: FETCH_DATA_SUCCESS,
         data: data
     };
 };
 
-var FETCH_DATA_ERROR= 'FETCH_DATA_ERROR';
-var fetchDataError = function(error) {
+export const FETCH_DATA_ERROR = 'FETCH_DATA_ERROR';
+export const fetchDataError = (error) => {
     return {
         type: FETCH_DATA_ERROR,
         error: error
     };
 };
 
-var fetchData = function() {
-      return function(dispatch) {
-       var token = Cookies.get('accessToken');
-       var headers = new Headers({
-      		Authorization: 'bearer ' + token
-      	});
-      //  headers.append('Authorization', `Bearer ` + token);
-       var url = 'http://localhost:3000/api/words';
-       return fetch(url, {headers}).then(function(response) {
+export const fetchData = () => {
+      return (dispatch) => {
+       let token = Cookies.get('accessToken');
+       let headers = new Headers();
+       headers.append('Authorization', `Bearer ` + token);
+       let url = 'http://localhost:3000/api/words';
+       return fetch(url, {headers}).then((response) => {
             if (response.status < 200 || response.status >= 300) {
-                var error = new Error(response.statusText)
+                let error = new Error(response.statusText)
                 error.response = response
                 throw error;
             }
             return response;
         })
-        .then(function(response) {
+        .then((response) => {
             return response.json();
         })
-        .then(function(data) {
+        .then((data) => {
             return dispatch(
                 fetchDataSuccess(data)
             );
         })
-        .catch(function(error) {
+        .catch((error) => {
             return dispatch(
                 fetchDataError(error)
             );
@@ -49,19 +47,19 @@ var fetchData = function() {
     }
 };
 
-var postData = function(userAnswer) {
-    return function(dispatch) {
-        var token = Cookies.get('accessToken');
-        var headers = new Headers();
+export const postData = (userAnswer) => {
+    return (dispatch) => {
+        let token = Cookies.get('accessToken');
+        let headers = new Headers();
         headers.append('Authorization', `Bearer ` + token);
         headers.append('Content-Type', 'application/json');
         console.log(headers);
-        var url = 'http://localhost:3000/api/words';
+        let url = 'http://localhost:3000/api/words';
         return fetch(url, {
       	  method: 'POST',
           body: JSON.stringify({userAnswer: userAnswer}),
           headers: headers
-        }).then(function(response) {
+      }).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response
@@ -69,15 +67,15 @@ var postData = function(userAnswer) {
             }
             return response;
         })
-        .then(function(response) {
+        .then((response) => {
             return response.json();
         })
-        .then(function(data) {
+        .then((data) => {
             return dispatch(
                 postAnswerSuccess(data)
             );
         })
-        .catch(function(error) {
+        .catch((error) => {
             return dispatch(
                 postAnswerError(error)
             );
@@ -87,48 +85,48 @@ var postData = function(userAnswer) {
 
 
 
-var POST_ANSWER_SUCCESS = 'POST_ANSWER_SUCCESS';
-var postAnswerSuccess = function(data) {
+export const POST_ANSWER_SUCCESS = 'POST_ANSWER_SUCCESS';
+export const postAnswerSuccess = (data) => {
     return {
         type: POST_ANSWER_SUCCESS,
         data: data
     };
 };
 
-var POST_ANSWER_ERROR= 'POST_ANSWER_ERROR';
-var postAnswerError = function(error) {
+export const POST_ANSWER_ERROR= 'POST_ANSWER_ERROR';
+export const postAnswerError = (error) => {
     return {
         type: POST_ANSWER_ERROR,
         error: error
     };
 };
 
-var GET_NEXTWORD_SUCCESS = 'GET_NEXTWORD_SUCCESS';
-var getNextWordSuccess = function(data) {
+export const GET_NEXTWORD_SUCCESS = 'GET_NEXTWORD_SUCCESS';
+export const getNextWordSuccess = (data) => {
     return {
         type: GET_NEXTWORD_SUCCESS,
         data: data
     };
 };
 
-var GET_NEXTWORD_ERROR= 'GET_NEXTWORD_ERROR';
-var getNextWordError = function(error) {
+export const GET_NEXTWORD_ERROR= 'GET_NEXTWORD_ERROR';
+export const getNextWordError = (error) => {
     return {
         type: GET_NEXTWORD_ERROR,
         error: error
     };
 };
 
-var putData = function(id, title) {
-    return function(dispatch) {
-        var url = 'http://localhost:3000/api/' + id;
+export const putData = (id, title) => {
+    return (dispatch) => {
+        let url = 'http://localhost:3000/api/' + id;
         return fetch(url, {
       	  method: 'PUT',
           body: JSON.stringify({title: title}),
           headers: new Headers({
 		          'Content-Type': 'application/json'
 	        })
-        }).then(function(response) {
+        }).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response
@@ -136,18 +134,15 @@ var putData = function(id, title) {
             }
             return response;
         })
-        .then(function(response) {
+        .then((response) => {
             return response.json();
         })
-        .then(function(data) {
+        .then((data) => {
             return dispatch(
                 fetchDataSuccess(data)
-                // I'm using the same success and error actions,
-                // but you might want to use different actions
-                // for these functions.
             );
         })
-        .catch(function(error) {
+        .catch((error) => {
             return dispatch(
                 fetchDataError(error)
             );
@@ -155,16 +150,16 @@ var putData = function(id, title) {
     }
 };
 
-var putStatus = function(id, status) {
+var putStatus = (id, status) => {
     return function(dispatch) {
-        var url = 'http://localhost:3000/api/' + id;
+        let url = 'http://localhost:3000/api/' + id;
         return fetch(url, {
       	  method: 'PUT',
           body: JSON.stringify({status: status}),
           headers: new Headers({
 		          'Content-Type': 'application/json'
 	        })
-        }).then(function(response) {
+        }).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response
@@ -172,18 +167,15 @@ var putStatus = function(id, status) {
             }
             return response;
         })
-        .then(function(response) {
+        .then((response) => {
             return response.json();
         })
-        .then(function(data) {
+        .then((data) => {
             return dispatch(
                 fetchDataSuccess(data)
-                // I'm using the same success and error actions,
-                // but you might want to use different actions
-                // for these functions.
             );
         })
-        .catch(function(error) {
+        .catch((error) => {
             return dispatch(
                 fetchDataError(error)
             );
@@ -191,21 +183,21 @@ var putStatus = function(id, status) {
     }
 };
 
-var START_GAME = 'START_GAME';
-var startGame = function() {
+export const START_GAME = 'START_GAME';
+export const startGame = function() {
     return {
         type: START_GAME
     }
 };
 
-var NEXT_WORD = 'NEXT_WORD';
-var nextWord = function() {
-    return function(dispatch) {
-       var token = Cookies.get('accessToken');
-       var headers = new Headers();
+export const NEXT_WORD = 'NEXT_WORD';
+export const nextWord = () => {
+    return (dispatch) => {
+       let token = Cookies.get('accessToken');
+       let headers = new Headers();
        headers.append('Authorization', `Bearer ` + token);
-       var url = 'http://localhost:3000/api/words';
-       return fetch(url, {headers}).then(function(response) {
+       let url = 'http://localhost:3000/api/words';
+       return fetch(url, {headers}).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
                 error.response = response
@@ -213,43 +205,18 @@ var nextWord = function() {
             }
             return response;
         })
-        .then(function(response) {
+        .then((response) => {
             return response.json();
         })
-        .then(function(data) {
+        .then((data) => {
             return dispatch(
                 getNextWordSuccess(data)
             );
         })
-        .catch(function(error) {
+        .catch((error) => {
             return dispatch(
                 getNextWordError(error)
             );
         });
     }
 };
-
-exports.putStatus = putStatus;
-exports.putData = putData;
-exports.postData = postData;
-exports.fetchData = fetchData;
-exports.startGame = startGame;
-exports.START_GAME = START_GAME;
-
-exports.FETCH_DATA_SUCCESS = FETCH_DATA_SUCCESS;
-exports.fetchDataSuccess = fetchDataSuccess;
-exports.FETCH_DATA_ERROR = FETCH_DATA_ERROR;
-exports.fetchDataError = fetchDataError;
-
-exports.POST_ANSWER_SUCCESS = POST_ANSWER_SUCCESS;
-exports.postAnswerSuccess = postAnswerSuccess;
-exports.POST_ANSWER_ERROR = POST_ANSWER_ERROR;
-exports.postAnswerError = postAnswerError;
-
-exports.GET_NEXTWORD_SUCCESS = GET_NEXTWORD_SUCCESS;
-exports.getNextWordSuccess = getNextWordSuccess;
-exports.GET_NEXTWORD_ERROR = GET_NEXTWORD_ERROR;
-exports.getNextWordError = getNextWordError;
-
-exports.NEXT_WORD = NEXT_WORD;
-exports.nextWord = nextWord;

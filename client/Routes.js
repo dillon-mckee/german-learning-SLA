@@ -1,29 +1,23 @@
-var React = require('react');
-var Provider = require("react-redux").Provider;
-var store = require("./store");
-var router = require('react-router');
-var Router = router.Router;
-var Route = router.Route;
-var IndexRoute = router.IndexRoute;
-var hashHistory = router.hashHistory;
-var Link = router.Link;
-var App = require('./App');
-var Login = require('./Login');
-var LearningWindow = require('./LearningWindow');
+import React from 'react';
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
+import { Provider } from 'react-redux';
+import LearningWindow from './containers/LearningWindow';
+import Login from './components/Login';
+import App from './App';
+import store from './redux/store';
 
-
-
-var routes = (
+const Routes = (
 	<Provider store={store}>
-    <Router history={hashHistory}>
-    	<Route path="/" component={App}>
-	        <IndexRoute component={Login} />
-          <Route path="/learn" component={LearningWindow} />
-      </Route>
-    </Router>
-    </Provider>
-);
+			<Router history={hashHistory}>
+		    	<Route path="/" component={App}>
+			        <IndexRoute component={Login} />
+		          <Route path="/learn" component={LearningWindow} />
+		      </Route>
+		    </Router>
+		</Provider>
+		);
 
 
-module.exports = routes;
+
+export default Routes;
