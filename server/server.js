@@ -1,22 +1,70 @@
-var express = require('express');
-var app = express();
-var routes = require('./routes')
-var passport = require('passport');
-var googleStrategy = require('passport-google-oauth20').Strategy;
-var bearerStrategy = require('passport-http-bearer').Strategy;
-var bodyParser = require('body-parser');
-//var algorithm = require('./models/algorithm');
-var mongoose = require('mongoose');
-var config = require('./config');
-var User = require('./models/users');
-var words = require('./models/words').words;
+const express = require('express');
+const app = express();
+const routes = require('./routes')
+const passport = require('passport');
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const bearerStrategy = require('passport-http-bearer').Strategy;
+const bodyParser = require('body-parser');
+const algorithm = require('./models/algorithm');
+const mongoose = require('mongoose');
+const config = require('./config');
+const User = require('./models/users');
+const words = require('./models/words').words;
+const algo = require('./models/algorithm');
+const _ = require('underscore');
 
+const HOST = process.env.HOST;
+const PORT = config.PORT || 3000;
+mongoose.connect(config.DATABASE_URL, (err)=> {
+    if (err && callback) {
+      return callback(err);
+    }
+});
+mongoose.connection.on('error', (err)=> {
+    console.error('MongoDB error: %s', err);
+});
 app.use(bodyParser.json());
 app.use('/', express.static('build'));
+app.use(passport.initialize());
+
+passport.use(new googleStrategy({
+    clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
+    clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
+    callbackURL: 'http://localhost:3000/auth/google/callback'
+  },
+  (accessToken, refreshToken, profile, done)=> {
+    User.findOne({googleID: profile.id}, (err, user)=> {
+      if (!user) {
+        User.create({
+          googleID: profile.id,
+          accessToken: accessToken,
+          displayName: profile.displayName,
+          words: words
+        }, (err, user)=> {
+          return done(err, user);
+        });
+      } else {
+
+        return done(err, user);
+      }
+    }
+
+     );
+  }));
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login/google', session: false }),
+  (req, res)=> {
+    res.cookie('accessToken', req.user.accessToken, {expires: 0})
+    res.redirect('/#/learn');
+});
+
 passport.use(new bearerStrategy(
-    function (token, done) {
+     (token, done)=> {
       User.findOne({accessToken: token},
-        function(err, user) {
+        (err, user)=> {
           if(err) {
             return done(err);
           }
@@ -25,164 +73,111 @@ passport.use(new bearerStrategy(
           }
           return done(null, user, { scope: 'read' })
         });
-
-        // // console.log('token', token);
-        // //TODO: find user with token then run callback with user
-        // // if (token == 'Ci9zA8DD8I8WGVOuSTGWxT6j5liMz9buxSOFh9nHvam2docwk') {
-        // if (token) {//== 'ya29.Ci90A7FswNwfeEhC-r9nKQUkmCCUEXqzaBl3Qe3hB6EnaZGU74rr47WhtB835smvhg') {
-        //     var user = {user: 'bob'};
-        //     return done(null, user, {scope: 'read'});
-        // } else {
-        //     return done(null, false);
-        // }
-
     }
 ));
 
-
-passport.use(new googleStrategy({
-    clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
-    clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'http://localhost:3000/auth/google/callback'
-  },
-  function(accessToken, refreshToken, profile, done) {
-console.log(profile);
-    // var user = {
-    //   profile: profile.id,
-    //   accessToken: accessToken,
-    //   displayName: profile.displayName
-    // }
-    // return cb(null, user); //==>> req.user
-    User.findOne({googleID: profile.id}, function(err, user) {
-      if (!user) {
-        User.create({
-          googleID: profile.id,
-          accessToken: accessToken,
-          displayName: profile.displayName,
-          words: words
-        }, function(err, user) {
-          return done(err, user);
-        });
-      } else {
-        return done(err, user);
-      }
-    }
-     // 	{googleId: profile.id},
-	    // {
-	    // 	displayName: profile.displayName,
-	    // 	accessToken: accessToken
-      // },
-	    // {	upsert:true,
-	    // 	new:true,
-      //   setDefaultsOnInsert: true
-	    // },
-	    // function(err, user){
-      // 		if(err){
-      // 			console.log('error: ', err);
-      // 		} else {
-      // 			console.log('displayName:', user);
-      // 			return done(null, user);
-      // 		}}
-     );
-  }));
-
-
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
-app.get('/auth/google/callback',
-  passport.authenticate('google', { scope: ['profile'], failureRedirect: '/login/google', session: false }),
-  function(req, res) {
-    // console.log("return log", res);
-    res.cookie('accessToken', req.user.accessToken, {expires: 0})
-    res.redirect('/#/learn');
-});
-
-
-// console.log("Log from line58", words);
-
 var questionIndex = 0;
-var userScore = 0;
-
+var shuffled = [];
+var Arr = [];
 app.get('/api/words',
   passport.authenticate('bearer', {session: false }),
-  function(req, res) {
-    var googleID = req.user.googleID
-    // ask mongoose for the array, then call alogrithm([)
-    User.findOne({googleID: googleID}), function(err, user) {
+  (req, res)=> {
+    var googleID = req.user.googleID;
+    User.findOne({googleID: googleID}, (err, user)=> {
       if(err) {
-        console.log("user error: " )
-        res.send("Error has occured")
-      } else {
-        console.log("user: ",user);
-        res.json(user);
-      }
-    }
+        console.log("user error: " );
+        res.send("Error has occured");
 
-    // res.json({algorithm: algorithm[questionIndex],
-    //           userScore: userScore});
-    // console.log(algorithm[questionIndex]);
-});
+      } else if(Arr.length === 0) {
+        console.log("Arr = null")
+        Arr = algo(user.words);
+        shuffled = _.shuffle(Arr)
+        var data = {word: shuffled[questionIndex],
+                    userScore: user.userScore,
+                    user: user.displayName,
+                    hasPlayed: user.hasPlayed};
+        questionIndex ++;
+        res.json(data);
+        console.log('get hit');
+
+      } else if(questionIndex == shuffled.length) {
+        res.json({word: {german: "Thanks for playing!!!"}});
+        questionIndex = 0;
+        Arr = [];
+        shuffled = [];
+
+      } else {
+        console.log('3rd option', shuffled[questionIndex])
+        res.json({word: shuffled[questionIndex]});
+        questionIndex ++;
+        console.log('get hit');
+      }
+    })
+  });
 
 app.post('/api/words',
   passport.authenticate('bearer', {session: false }),
-  function(req, res) {
-    // console.log(req.body);
-    var idx = algorithm[questionIndex].id;
+    (req, res)=> {
+    console.log('questionIndex: ',questionIndex);
+    var idx = shuffled[questionIndex - 1].id;
     var isAnswerCorrect;
     var userAnswer = req.body.userAnswer;
-    // console.log('word to compare', algorithm[questionIndex].english)
-    if (userAnswer === algorithm[questionIndex].english) {
-
-
-      // console.log("idx: ",idx)
-      words[idx].correct += 1
-      words[idx].last += 1
-      words[idx].attempted = true
-      // console.log("words: ",words[idx]);
-      userScore = userScore += 10;
+    if (userAnswer === shuffled[questionIndex - 1].english) {
+      User.findOneAndUpdate({ 'googleID': req.user.googleID, 'words.id': idx },
+        { $set: {'words.$.attempted': true, 'hasPlayed': true} ,
+         $inc: {'words.$.correct': 1, 'words.$.last': 1, 'userScore': 10} },
+        (err, user)=> {
+        if(err) {
+          console.log("error :",err )
+        }
+        console.log("ok")
       isAnswerCorrect = 'true';
+      res.json({word: shuffled[questionIndex - 1],
+                userScore: user.userScore,
+                isAnswerCorrect: isAnswerCorrect});
+      })
     } else {
-      userScore = userScore;
-      isAnswerCorrect = 'false';
-      words[idx].last += 1
-      words[idx].attempted = true
-      // console.log("words: ",words[idx]);
+      User.findOneAndUpdate({ 'googleID': req.user.googleID, 'words.id': idx },
+        { $set: {'words.$.attempted': true, hasPlayed: true} ,
+        $inc: {'words.$.last': 1} },
+      (err, user)=> {
+        if(err) {
+          console.log("error :",err )
+        }
+        console.log("ok")
+        isAnswerCorrect = 'false';
+
+        res.json({word: shuffled[questionIndex - 1],
+                  userScore: user.userScore,
+                  isAnswerCorrect: isAnswerCorrect});
+        })
     }
-    // console.log(userScore);
-    res.json({algorithm: algorithm[questionIndex],
-              userScore: userScore,
-              isAnswerCorrect: isAnswerCorrect});
-    // console.log(algorithm[questionIndex]);
-    questionIndex++;
+    console.log('post hit');
+    console.log('idx: ',idx);
 });
-app.get('/logout', function (req, res) {
-    // console.log('req.user before', req.user)
+app.get('/logout', (req, res)=> {
+    questionIndex = 0;
+    Arr = [];
+    shuffled = [];
     req.logout();
-    // console.log('req.user after', req.user)
     res.redirect('/');
 });
+
 app.use('/', routes)
 
+function runServer() {
+    return new Promise((resolve, reject) => {
+        app.listen(PORT, HOST, (err) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            }
 
-
-var runServer = function(callback) {
-  mongoose.connect(config.DATABASE_URL, function(err) {
-    if (err && callback) {
-      return callback(err);
-    }
-
-    app.listen(config.PORT, function() {
-      console.log('Listening on localhost:' + config.PORT);
-      if (callback) {
-          callback();
-      }
+            const host = HOST || 'localhost';
+            console.log(`Listening on ${host}:${PORT}`);
+        });
     });
-  });
-};
+}
 
 if (require.main === module) {
   runServer(function(err) {
@@ -191,8 +186,6 @@ if (require.main === module) {
     }
   });
 };
-
-
 
 exports.app = app;
 exports.runServer = runServer;

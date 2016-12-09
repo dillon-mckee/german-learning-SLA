@@ -20,8 +20,10 @@ var fetchDataError = function(error) {
 var fetchData = function() {
       return function(dispatch) {
        var token = Cookies.get('accessToken');
-       var headers = new Headers();
-       headers.append('Authorization', `Bearer ` + token);
+       var headers = new Headers({
+      		Authorization: 'bearer ' + token
+      	});
+      //  headers.append('Authorization', `Bearer ` + token);
        var url = 'http://localhost:3000/api/words';
        return fetch(url, {headers}).then(function(response) {
             if (response.status < 200 || response.status >= 300) {

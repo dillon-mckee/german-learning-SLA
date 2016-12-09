@@ -8,7 +8,7 @@ var initialState = {
   userScore: 0,
   correctWord: '',
   germanWord: '',
-  hasPlayed: 'false',
+  hasPlayed: false,
   inProgress: 'false',
   isLoggedIn: 'false',
   setComplete: 'false',
@@ -21,11 +21,13 @@ var germanXReducer = function(state, action) {
     if (action.type === actions.FETCH_DATA_SUCCESS) {
       console.log(action.data)
       var newState = update(state, {
-        germanWord: {$set: action.data.algorithm.german},
-        correctWord: {$set: action.data.algorithm.english},
-        userScore: {$set: action.data.userScore}
+        user: {$set: action.data.user},
+        germanWord: {$set: action.data.word.german},
+        correctWord: {$set: action.data.word.english},
+        userScore: {$set: action.data.userScore},
+        hasPlayed: {$set: action.data.hasPlayed}
       });
-
+      console.log('newState: ',newState);
       return newState;
   }
     else if (action.type === actions.FETCH_DATA_ERROR) {
@@ -46,8 +48,8 @@ var germanXReducer = function(state, action) {
       var newState = update(state, {
         isAnswerCorrect: {$set: action.data.isAnswerCorrect},
         userScore: {$set: action.data.userScore},
-        //germanWord: {$set: action.data.word.german},
-        //correctWord: {$set: action.data.word.english},
+        germanWord: {$set: action.data.word.german},
+        correctWord: {$set: action.data.word.english},
         answerSubmitted: {$set: 'true'},
         buttonStyle: {display: {$set: 'none'}}
       });
@@ -60,8 +62,8 @@ var germanXReducer = function(state, action) {
     if (action.type === actions.GET_NEXTWORD_SUCCESS) {
       console.log(action.data);
        var newState = update(state, {
-        germanWord: {$set: action.data.algorithm.german},
-        correctWord: {$set: action.data.algorithm.english},
+        germanWord: {$set: action.data.word.german},
+        correctWord: {$set: action.data.word.english},
         answerSubmitted: {$set: 'false'},
         buttonStyle: {display: {$set: 'inline'}}
       });

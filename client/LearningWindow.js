@@ -58,7 +58,7 @@ render: function() {
             <section>
             {this.props.inProgress == 'false' ?
                 <div className='welcome-and-start'>
-                    <WelcomeMessage user={this.props.user} hasPlayed={this.props.hasPlayed}/>
+                    <WelcomeMessage user={this.props.user} hasPlayed={this.props.hasPlayed} userScore={this.props.userScore}/>
                     <StartButton handleStart={this.startGame}/>
                 </div>
                 :
