@@ -20,14 +20,16 @@ const germanXReducer = (state, action) => {
     state = state || initialState;
     switch (action.type) {
         case 'FETCH_DATA_SUCCESS':
+            console.log(action.data);
             return update(state, {
               user: {$set: action.data.user},
-              germanWord: {$set: action.data.words.german},
-              correctWord: {$set: action.data.words.english},
+              germanWord: {$set: action.data.word.german},
+              correctWord: {$set: action.data.word.english},
               userScore: {$set: action.data.userScore},
               hasPlayed: {$set: action.data.hasPlayed}
     });
         case 'FETCH_DATA_ERROR':
+            console.log(action.data);
             console.log(action.error);
         return state;
         case 'START_GAME':
