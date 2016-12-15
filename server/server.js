@@ -163,7 +163,7 @@ app.get('/logout', (req, res)=> {
     res.redirect('/');
 });
 
-app.use('/', routes)
+// app.use('/', routes)
 
 var runServer = function(callback) {
    mongoose.connect(config.DATABASE_URL, function(err) {
