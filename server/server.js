@@ -30,7 +30,7 @@ app.use(passport.initialize());
 passport.use(new googleStrategy({
     clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
     clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    callbackURL: 'https://sleepy-lowlands-87122.herokuapp.com/auth/google/callback'
   },
   (accessToken, refreshToken, profile, done)=> {
     User.findOne({googleID: profile.id}, (err, user)=> {
