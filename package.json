@@ -4,6 +4,8 @@
   "description": "",
   "main": "client/main.js",
   "scripts": {
+    "start": "node server/server",
+    "heroku-postbuild" : "npm run build",
     "test": "mocha --compilers js:babel-register test/**/*.js*",
     "mkdir": "mkdir -p build",
     "clean": "rm -rf build",
