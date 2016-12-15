@@ -5,11 +5,10 @@
   "main": "client/main.js",
   "scripts": {
     "start": "node server/server",
-    "heroku-postbuild": "npm run build",
     "test": "mocha --compilers js:babel-register test/**/*.js*",
     "mkdir": "mkdir -p build",
     "clean": "rm -rf build",
-    "build": "npm run mkdir && npm run build:html && npm run build:js && npm run build:css",
+    "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:js && npm run build:css",
     "serve": "nodemon server/server",
     "watch": "npm run watch:html & npm run watch:js & npm run watch:css",
     "watch:html": "npm run build:html && chokidar index.html -c 'npm run build:html'",
