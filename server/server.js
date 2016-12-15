@@ -165,27 +165,48 @@ app.get('/logout', (req, res)=> {
 
 app.use('/', routes)
 
-function runServer() {
-    return new Promise((resolve, reject) => {
-        app.listen(PORT, HOST, (err) => {
-            if (err) {
-                console.error(err);
-                reject(err);
-            }
-
-            const host = HOST || 'localhost';
-            console.log(`Listening on ${host}:${PORT}`);
-        });
-    });
+var runServer = function(callback) {
+   mongoose.connect(config.DATABASE_URL, function(err) {
+       if (err && callback) {
+           return callback(err);
+       }
+       app.listen(config.PORT, function() {
+           console.log('Listening on localhost:' + config.PORT);
+           if (callback) {
+               callback();
+           }
+       });
+   });
+};
+if (require.main === module) {
+   runServer(function(err) {
+       if (err) {
+           console.error(err);
+       }
+   });
 }
 
-if (require.main === module) {
-  runServer(function(err) {
-    if (err) {
-        console.error(err);
-    }
-  });
-};
+// function runServer() {
+//     return new Promise((resolve, reject) => {
+//         app.listen(PORT, HOST, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 reject(err);
+//             }
+//
+//             const host = HOST || 'localhost';
+//             console.log(`Listening on ${host}:${PORT}`);
+//         });
+//     });
+// }
+
+// if (require.main === module) {
+//   runServer(function(err) {
+//     if (err) {
+//         console.error(err);
+//     }
+//   });
+// };
 
 exports.app = app;
 exports.runServer = runServer;
