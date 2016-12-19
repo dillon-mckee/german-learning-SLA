@@ -24,7 +24,7 @@ mongoose.connection.on('error', (err)=> {
     console.error('MongoDB error: %s', err);
 });
 app.use(bodyParser.json());
-app.use( express.static('build'));
+app.use('/', express.static('build'));
 app.use(passport.initialize());
 
 passport.use(new googleStrategy({
