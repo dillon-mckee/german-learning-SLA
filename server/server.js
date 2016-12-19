@@ -28,9 +28,9 @@ app.use('/', express.static('build'));
 app.use(passport.initialize());
 
 passport.use(new googleStrategy({
-    clientID: '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
-    clientSecret: 'qGo2alB2CSMDdExUvIIyKxY7',
-    callbackURL: 'https://sleepy-lowlands-87122.herokuapp.com/auth/google/callback'
+    clientID: process.env.CLIENTID || '525886096245-th0hhdgnfprvn1pp2pruv4bcr1ds2j73.apps.googleusercontent.com',
+    clientSecret: process.env.CLIENTSECRET || 'qGo2alB2CSMDdExUvIIyKxY7',
+    callbackURL: process.env.CALLBACKURL || 'https://sleepy-lowlands-87122.herokuapp.com/auth/google/callback'
   },
   (accessToken, refreshToken, profile, done)=> {
     User.findOne({googleID: profile.id}, (err, user)=> {
