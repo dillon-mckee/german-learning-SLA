@@ -25,4 +25,4 @@ router.post('/user', function(req, res) {
   });
 });
 
-module.exports = routes;
+module.exports = router;
