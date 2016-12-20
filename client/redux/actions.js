@@ -22,7 +22,7 @@ export const fetchData = () => {
        let token = Cookies.get('accessToken');
        let headers = new Headers();
        headers.append('Authorization', `Bearer ` + token);
-       let url = 'http://localhost:3000/api/words';
+       let url = 'https://sleepy-lowlands-87122.herokuapp.com/api/words';
        return fetch(url, {headers}).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 let error = new Error(response.statusText)
@@ -54,7 +54,7 @@ export const postData = (userAnswer) => {
         headers.append('Authorization', `Bearer ` + token);
         headers.append('Content-Type', 'application/json');
         console.log(headers);
-        let url = 'http://localhost:3000/api/words';
+        let url = 'https://sleepy-lowlands-87122.herokuapp.com/api/words';
         return fetch(url, {
       	  method: 'POST',
           body: JSON.stringify({userAnswer: userAnswer}),
@@ -119,7 +119,7 @@ export const getNextWordError = (error) => {
 
 export const putData = (id, title) => {
     return (dispatch) => {
-        let url = 'http://localhost:3000/api/' + id;
+        let url = 'https://sleepy-lowlands-87122.herokuapp.com/api/' + id;
         return fetch(url, {
       	  method: 'PUT',
           body: JSON.stringify({title: title}),
@@ -152,7 +152,7 @@ export const putData = (id, title) => {
 
 var putStatus = (id, status) => {
     return function(dispatch) {
-        let url = 'http://localhost:3000/api/' + id;
+        let url = 'https://sleepy-lowlands-87122.herokuapp.com/api/' + id;
         return fetch(url, {
       	  method: 'PUT',
           body: JSON.stringify({status: status}),
@@ -196,7 +196,7 @@ export const nextWord = () => {
        let token = Cookies.get('accessToken');
        let headers = new Headers();
        headers.append('Authorization', `Bearer ` + token);
-       let url = 'http://localhost:3000/api/words';
+       let url = 'https://sleepy-lowlands-87122.herokuapp.com/api/words';
        return fetch(url, {headers}).then((response) => {
             if (response.status < 200 || response.status >= 300) {
                 var error = new Error(response.statusText)
